@@ -1,0 +1,134 @@
+{
+  "$defs": {
+    "BodyRegion": {
+      "enum": [
+        "head",
+        "left_torso",
+        "right_torso",
+        "lower_torso",
+        "left_arm",
+        "right_arm",
+        "left_leg",
+        "right_leg",
+        "unknown",
+        "whole_body"
+      ],
+      "title": "BodyRegion",
+      "type": "string"
+    },
+    "EventClass": {
+      "enum": [
+        "no_event",
+        "impact",
+        "collision",
+        "explosion"
+      ],
+      "title": "EventClass",
+      "type": "string"
+    },
+    "Recipient": {
+      "enum": [
+        "player",
+        "other_character",
+        "environment",
+        "unknown"
+      ],
+      "title": "Recipient",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "video_id": {
+      "minLength": 1,
+      "title": "Video Id",
+      "type": "string"
+    },
+    "video_path": {
+      "minLength": 1,
+      "title": "Video Path",
+      "type": "string"
+    },
+    "source_id": {
+      "minLength": 1,
+      "title": "Source Id",
+      "type": "string"
+    },
+    "split": {
+      "enum": [
+        "train",
+        "val",
+        "test"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "start_ms": {
+      "minimum": 0,
+      "title": "Start Ms",
+      "type": "integer"
+    },
+    "end_ms": {
+      "exclusiveMinimum": 0,
+      "title": "End Ms",
+      "type": "integer"
+    },
+    "event_class": {
+      "$ref": "#/$defs/EventClass"
+    },
+    "recipient": {
+      "$ref": "#/$defs/Recipient"
+    },
+    "body_region": {
+      "$ref": "#/$defs/BodyRegion"
+    },
+    "intensity": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Intensity",
+      "type": "number"
+    },
+    "observable_region": {
+      "title": "Observable Region",
+      "type": "boolean"
+    },
+    "ambiguous": {
+      "default": false,
+      "title": "Ambiguous",
+      "type": "boolean"
+    },
+    "synthetic": {
+      "default": false,
+      "title": "Synthetic",
+      "type": "boolean"
+    },
+    "viewpoint": {
+      "default": "unknown",
+      "description": "Source camera viewpoint; unknown for unlabeled legacy data",
+      "enum": [
+        "first_person",
+        "third_person",
+        "unknown"
+      ],
+      "title": "Viewpoint",
+      "type": "string"
+    }
+  },
+  "required": [
+    "video_id",
+    "video_path",
+    "source_id",
+    "split",
+    "start_ms",
+    "end_ms",
+    "event_class",
+    "recipient",
+    "body_region",
+    "intensity",
+    "observable_region"
+  ],
+  "title": "ClipAnnotation",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://universal-haptic-model.local/schemas/clip_annotation.schema.json"
+}

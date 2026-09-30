@@ -1,0 +1,31 @@
+version: '0.1'
+viewBox: '0 0 300 500'
+# Anatomical left is on the viewer's right. Geometry belongs to the ontology.
+regions:
+  - id: head
+    label: Head
+    path: M 150 18 C 121 18 114 39 118 63 C 121 83 130 96 150 96 C 170 96 179 83 182 63 C 186 39 179 18 150 18 Z
+  - id: left_torso
+    label: Left torso
+    path: M 154 111 L 183 105 L 197 125 L 187 201 L 154 201 Z
+  - id: right_torso
+    label: Right torso
+    path: M 146 111 L 117 105 L 103 125 L 113 201 L 146 201 Z
+  - id: lower_torso
+    label: Lower torso
+    path: M 114 209 L 186 209 L 192 258 L 170 276 L 150 262 L 130 276 L 108 258 Z
+  - id: left_arm
+    label: Left arm
+    path: M 202 113 Q 217 113 225 135 L 239 190 L 252 249 Q 253 269 240 272 Q 228 272 224 256 L 208 204 L 194 152 Z
+  - id: right_arm
+    label: Right arm
+    path: M 98 113 Q 83 113 75 135 L 61 190 L 48 249 Q 47 269 60 272 Q 72 272 76 256 L 92 204 L 106 152 Z
+  - id: left_leg
+    label: Left leg
+    path: M 157 276 L 174 284 L 191 268 L 188 353 L 182 435 L 195 463 Q 198 477 181 479 L 158 479 Q 150 475 155 456 L 157 361 L 151 306 Z
+  - id: right_leg
+    label: Right leg
+    path: M 143 276 L 126 284 L 109 268 L 112 353 L 118 435 L 105 463 Q 102 477 119 479 L 142 479 Q 150 475 145 456 L 143 361 L 149 306 Z
+special_regions:
+  - unknown
+  - whole_body

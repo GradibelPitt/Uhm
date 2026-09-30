@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "BodyRegion": {
+      "enum": [
+        "head",
+        "left_torso",
+        "right_torso",
+        "lower_torso",
+        "left_arm",
+        "right_arm",
+        "left_leg",
+        "right_leg",
+        "unknown",
+        "whole_body"
+      ],
+      "title": "BodyRegion",
+      "type": "string"
+    },
+    "Confidence": {
+      "additionalProperties": false,
+      "properties": {
+        "event": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Event",
+          "type": "number"
+        },
+        "recipient": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Recipient",
+          "type": "number"
+        },
+        "region": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Region",
+          "type": "number"
+        },
+        "intensity": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Intensity",
+          "type": "number"
+        }
+      },
+      "required": [
+        "event",
+        "recipient",
+        "region",
+        "intensity"
+      ],
+      "title": "Confidence",
+      "type": "object"
+    },
+    "Direction": {
+      "enum": [
+        "unknown",
+        "front",
+        "back",
+        "left",
+        "right",
+        "front_left",
+        "front_right",
+        "above",
+        "below"
+      ],
+      "title": "Direction",
+      "type": "string"
+    },
+    "PhysicalEventClass": {
+      "enum": [
+        "impact",
+        "collision",
+        "explosion"
+      ],
+      "title": "PhysicalEventClass",
+      "type": "string"
+    },
+    "Recipient": {
+      "enum": [
+        "player",
+        "other_character",
+        "environment",
+        "unknown"
+      ],
+      "title": "Recipient",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "minLength": 1,
+      "title": "Event Id",
+      "type": "string"
+    },
+    "timestamp_ms": {
+      "description": "Source video presentation time, not wall clock",
+      "minimum": 0,
+      "title": "Timestamp Ms",
+      "type": "integer"
+    },
+    "event_class": {
+      "$ref": "#/$defs/PhysicalEventClass"
+    },
+    "recipient": {
+      "$ref": "#/$defs/Recipient"
+    },
+    "body_region": {
+      "$ref": "#/$defs/BodyRegion"
+    },
+    "intensity": {
+      "description": "Perceptual salience, not physical force",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Intensity",
+      "type": "number"
+    },
+    "duration_ms": {
+      "exclusiveMinimum": 0,
+      "maximum": 5000,
+      "title": "Duration Ms",
+      "type": "integer"
+    },
+    "direction": {
+      "$ref": "#/$defs/Direction",
+      "default": "unknown"
+    },
+    "confidence": {
+      "$ref": "#/$defs/Confidence"
+    }
+  },
+  "required": [
+    "event_id",
+    "timestamp_ms",
+    "event_class",
+    "recipient",
+    "body_region",
+    "intensity",
+    "duration_ms",
+    "confidence"
+  ],
+  "title": "BodyForceEvent",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://universal-haptic-model.local/schemas/body_force_event.schema.json"
+}

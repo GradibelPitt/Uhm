@@ -1,0 +1,2 @@
+# Store source text consistently across Windows and Linux.
+* text=auto eol=lf

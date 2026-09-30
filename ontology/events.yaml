@@ -1,0 +1,22 @@
+version: '0.1'
+event_classes:
+  - no_event
+  - impact
+  - collision
+  - explosion
+recipients:
+  - player
+  - other_character
+  - environment
+  - unknown
+directions:
+  - unknown
+  - front
+  - back
+  - left
+  - right
+  - front_left
+  - front_right
+  - above
+  - below
+intensity_semantics: perceptual impact / haptic salience; not Newtons, injury or damage

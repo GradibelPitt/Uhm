@@ -1,0 +1,36 @@
+# Synthetic smoke-test baseline. These results do not establish gameplay ability.
+model:
+  backbone: mobilenet_v3_small_spatial
+  spatial_size: 4
+  temporal: gru
+  hidden_size: 128
+  dropout: 0.05
+  freeze_encoder: true
+data:
+  sampling: causal
+  num_frames: 6
+  image_size: 160
+  window_ms: 1000
+  step_ms: 125
+training:
+  epochs: 40
+  batch_size: 24
+  learning_rate: 0.0025
+  weight_decay: 0.0001
+  seed: 1729
+  num_threads: 4
+  augment: false
+  cache_features: true
+  # Original pixels plus 3 synchronized spatial/color views, fixed per run.
+  augmentation_views: 4
+  loss_weights:
+    event: 1.0
+    recipient: 1.0
+    region: 2.0
+    intensity: 3.0
+    observable: 0.5
+evaluation:
+  event_threshold: 0.60
+  recipient_threshold: 0.60
+  region_threshold: 0.55
+  observable_threshold: 0.65

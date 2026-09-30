@@ -1,0 +1,31 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+node_modules/
+frontend/dist/
+# Generated/imported datasets, annotations, manifests and previews stay local.
+/data/*
+!/data/README.md
+!/data/raw/
+!/data/clips/
+data/raw/*
+data/clips/*
+data/cache/*
+!data/raw/.gitkeep
+!data/clips/.gitkeep
+checkpoints/*
+!checkpoints/.gitkeep
+runs/*
+!runs/.gitkeep
+*.egg-info/
+.coverage
+*.tsbuildinfo
+
+# These project notes are local-only and must never be published.
+/progress.md
+/goal.md
+.env
+.env.*
+!.env.example
