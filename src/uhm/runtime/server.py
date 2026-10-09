@@ -38,7 +38,7 @@ class ResetMessage(BaseModel):
 def create_app(
     video: Path, checkpoint: Path, device: str = "cpu",
     runtime_config: Path | None = None, log_directory: Path | None = None,
-    *, predictor=None,
+    *, predictor=None, actions_path: Path | None = None,
 ) -> FastAPI:
     video = Path(video).resolve()
     builtin_demo = video == (ROOT / "data/raw/demo.mp4").resolve()
@@ -49,6 +49,12 @@ def create_app(
     logs.mkdir(parents=True, exist_ok=True)
     app = FastAPI(title="Universal Haptic Model", version=SCHEMA_VERSION)
     app.state.predictor = predictor
+    action_timeline = None
+    if actions_path is not None:
+        action_timeline = json.loads(Path(actions_path).read_text(encoding="utf-8"))
+        if not isinstance(action_timeline, dict) or Path(action_timeline.get("video", "")).resolve() != video:
+            raise ValueError("Action timeline does not match the configured video")
+    app.state.action_timeline = action_timeline
     # Model is shared and stateless across calls; aggregation and logs are per socket.
     model_lock = asyncio.Lock()
 
@@ -76,6 +82,11 @@ def create_app(
             "runtime": asdict(config),
         }
 
+    @app.get("/api/action-timeline")
+    def actions():
+        if app.state.action_timeline is None:
+            return JSONResponse({"message": "No action timeline loaded"}, status_code=404)
+        return app.state.action_timeline
     @app.get("/api/video")
     def source_video():
         # Starlette FileResponse supports byte ranges, necessary for native video seeking.

@@ -1,0 +1,26 @@
+model: gemma4:12b
+endpoint: http://127.0.0.1:11435
+task: visible_contact
+frame_layout: contact_sheet
+verify_jump_phase: true
+window_s: 1.0
+step_s: 0.5
+sample_fps: 4
+max_image_edge: 512
+jpeg_quality: 85
+request_timeout_s: 180
+transition_actions: [foot_push_off, foot_landing, torso_impact]
+actions:
+  foot_support: "A foot of the moving primary athlete visibly touches and bears weight on the ground or a surface in a CURRENT frame. Feet suspended in air are negative, even when background people stand on the ground. Hidden feet are unknown."
+  foot_push_off: "The primary athlete launches a jump: a weight-bearing planted foot is followed by separation and upward body motion. Ordinary running steps are negative. The separation must occur in a CURRENT frame."
+  foot_landing: "The primary athlete lands from a jump or drop ON THEIR FEET: airborne body followed by visible foot contact and settling in a CURRENT frame. Ordinary running steps are negative. A back-first or trunk-first landing with feet still in the air is negative."
+  hand_load: "The primary athlete's hands visibly press on a surface, grip or carry an external object. Freely moving hands are negative; hidden hands are unknown."
+  torso_impact: "The primary athlete's back or trunk transitions from being above a surface to visibly landing against it in a CURRENT frame. Feet need not touch that surface. Already resting on the surface is not a new impact."
+  torso_support: "The primary athlete's trunk or back visibly rests against a surface in a CURRENT frame. Being suspended above the surface is negative."
+contact_regions:
+  foot_support: feet
+  foot_push_off: feet
+  foot_landing: feet
+  hand_load: hands_and_arms
+  torso_impact: torso
+  torso_support: torso

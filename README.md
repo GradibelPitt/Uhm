@@ -176,6 +176,43 @@ runs/                     训练历史、评估报告、每个WebSocket会话的
 
 实时日志使用 `runs/session-<id>.events.jsonl`；完整预测使用同会话的 `.predictions.jsonl`。seek会写入reset记录，便于区分同一视频的多次播放；人体图不做预测。
 
-没有实现音频、游戏API、Mod、进程内存读取、特定游戏Hook、硬件输出、电刺激、温度或每帧VLM。接下来应优先收集和标注范围明确的真实游戏视频，包含困难负例与不可观察事件，再评估事件层面的效果。
+没有实现音频、游戏API、Mod、进程内存读取、特定游戏Hook、硬件输出、电刺激或温度。可选动作时间轴仅离线抽取采样帧使用视觉API，不是触觉事件主路径。接下来应优先收集和标注范围明确的真实游戏视频，包含困难负例与不可观察事件，再评估事件层面的效果。
 
 技术参考：[torchvision MobileNetV3](https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.mobilenet_v3_small.html)、[FastAPI WebSockets](https://fastapi.tiangolo.com/advanced/websockets/)。完整原始需求见 `docs/project-brief.md`，验收定义见 `docs/acceptance.md`。
+
+## 独立的视频动作时间轴（实验性）
+
+可选的 OpenAI Decisions API 后端只标注可见动作和媒体时间区间，不更改 MobileNetV3+GRU 的触觉事件模型，也不把动作标签当作受力事件。配置在 configs/decisions_actions.yaml；可添加或修改动作名称与可观察运动的定义。当前配置每 0.5 秒给一个输出区间，每次分析最多 2 秒上下文，按 4 fps 取有序帧。抽取的是 JPEG 帧，没有上传原视频文件或音频。运行真实 API 会向 OpenAI 发送这些帧。接口文档：https://developers.openai.com/api/docs/guides/decisions
+
+先下载并校验四段真实第三人称素材。原片与本地 H.264 MP4 派生文件保存在忽略提交的 data/raw/action_validation/，来源和署名见 docs/action-video-sources.json：
+
+    .\.venv\Scripts\python.exe scripts\fetch_action_videos.py
+
+无 API 凭据时，可以只验证解码、采样时间和界面准备。所有窗口明确标为 not_run，没有动作识别结果：
+
+    .\.venv\Scripts\python.exe -m uhm infer-actions --video data/raw/action_validation/mp4/high_jump.mp4 --output runs/high_jump.dry_run.actions.json --dry-run
+    .\.venv\Scripts\python.exe -m uhm serve-actions data/raw/action_validation/mp4/high_jump.mp4 runs/high_jump.dry_run.actions.json
+
+设置 OPENAI_API_KEY 后，去掉 --dry-run 即发起真实判断。初次建议用 --max-seconds 4 限制请求数；结果保存为 JSON。独立查看器默认在 http://127.0.0.1:8001，无需加载 PyTorch 或触觉 checkpoint。原 serve 也可加 --actions runs/xxx.actions.json 把动作时间轴并入原界面，但原路径仍需触觉 checkpoint。
+
+    .\.venv\Scripts\python.exe -m uhm infer-actions --video data/raw/action_validation/mp4/high_jump.mp4 --output runs/high_jump.actions.json --max-seconds 4
+    .\.venv\Scripts\python.exe -m uhm serve-actions data/raw/action_validation/mp4/high_jump.mp4 runs/high_jump.actions.json
+
+threshold: 0.6 为正例初值，negative_threshold: 0.2 为负例初值，中间保留 unknown；这些阈值尚未校准。每个动作另问其所需身体部位与运动是否可见，腿部不可见时 walking/running 不会据人物上半身判负。拒答、缺失、无效或重复回答也保留不确定。只有一个解码帧的窗口标为 insufficient_frames，不会据静态姿势判断运动。输出时间基于恒定帧率（CFR）假设的 frame_index / source_fps，记录请求采样时间及误差；可变帧率（VFR）需要先转为 CFR。区间边界最多只按 0.5 秒步长定位，概率并非准确率或已校准置信度。四段真实素材的本机验证记录见 docs/action-validation.md。
+
+Windows 本机也可用隐藏输入保存密钥，文件采用当前 Windows 用户加密，位于忽略提交的 runs/openai-key.clixml：
+
+    .\scripts\save_openai_key.ps1
+    .\scripts\run_actions_with_saved_key.ps1 -Video data/raw/action_validation/mp4/high_jump.mp4 -Output runs/high_jump.actions.json -MaxSeconds 4
+
+运行脚本只在子进程期间设置 OPENAI_API_KEY，结束后恢复原环境。API 余额需单独在 https://platform.openai.com/settings/organization/billing/overview 管理。
+
+## 本地视觉与受力相关接触
+
+Google Gemma 4 12B 已在 ROG 上通过独立本地运行器接入。默认识别支撑、蹬地、落地、外部负载和撞击，并输出受影响的足部、手/手臂、腿、躯干、头部或臀部与时间区间。配置在 configs/local_contacts.yaml；这是视觉接触候选，强度与左右侧无法确认时不填写。
+
+    .\scripts\start_local_vision.ps1
+    .\.venv\Scripts\python.exe -m uhm infer-local-contacts --video data/raw/action_validation/mp4/high_jump.mp4 --output runs/high_jump.body_contacts.json
+    .\.venv\Scripts\python.exe -m uhm serve-actions data/raw/action_validation/mp4/high_jump.mp4 runs/high_jump.body_contacts.json
+
+模型下载、硬件、实际验证和边界说明见 [本地视觉说明](docs/local-vision.md)。本地推理不需要 API key。

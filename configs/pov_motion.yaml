@@ -1,0 +1,23 @@
+model: gemma4:12b
+endpoint: http://127.0.0.1:11435
+task: egocentric_motion
+frame_layout: images
+window_s: 1.25
+step_s: 0.5
+sample_fps: 4
+batch_s: 0.5
+max_image_edge: 640
+jpeg_quality: 85
+request_timeout_s: 180
+actions:
+  foot_support: Estimated ground support, including feet outside the camera view.
+  foot_push_off: Launch into a jump, excluding ordinary running strides.
+  foot_landing: Return to ground support after a jump or drop.
+  cushioning: Post-landing compression and recovery.
+  hand_load: Visible hand support on a wall, rail or other surface.
+contact_regions:
+  foot_support: feet
+  foot_push_off: feet
+  foot_landing: feet
+  cushioning: legs
+  hand_load: hands_and_arms

@@ -5,6 +5,7 @@ import type { BodyForceEvent, BodyRegion } from './event'
 import { isBodyRegion, regionLabel } from './ontology'
 import { MockControls } from './components/MockControls'
 import { EventLog } from './components/EventLog'
+import { ActionTimeline } from './components/ActionTimeline'
 import { PageHeader } from './components/PageHeader'
 import { ModelDiagnostics } from './components/ModelDiagnostics'
 import { useInference } from './useInference'
@@ -24,6 +25,7 @@ export default function App() {
   const [playbackRate, setPlaybackRate] = useState(1)
   const [videoError, setVideoError] = useState<string | null>(null)
   const [videoReady, setVideoReady] = useState(false)
+  const [playbackSeconds, setPlaybackSeconds] = useState(0)
   const video = useRef<HTMLVideoElement>(null)
   const count = useRef(0)
   const runtime = useInference(video, mode === 'inference')
@@ -84,6 +86,7 @@ export default function App() {
             {runtime.metadata ? <video
               ref={video} src={runtime.metadata.video_url} controls muted playsInline preload="auto"
               aria-label="Source video for visual model inference" controlsList="nodownload noremoteplayback" disablePictureInPicture
+              onTimeUpdate={() => setPlaybackSeconds(video.current?.currentTime ?? 0)}
               onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)}
               onLoadedData={() => { setVideoReady(true); setVideoError(null); if (video.current) video.current.playbackRate = playbackRate }}
               onSeeking={runtime.reset} onRateChange={() => { setPlaybackRate(video.current?.playbackRate ?? 1); runtime.reset() }}
@@ -108,6 +111,7 @@ export default function App() {
             </select></label>
             <button className="primary-button play-button" onClick={togglePlayback} disabled={!videoReady || (inference && !modelReady)} aria-label={playing ? 'Pause source video' : 'Play source video'}><span aria-hidden="true">{playing ? 'Ⅱ' : '▶'}</span>{playing ? 'Pause video' : 'Play video'}</button>
           </div>
+          <ActionTimeline playbackSeconds={playbackSeconds} onSeek={seconds => { if (video.current) { video.current.currentTime = seconds; setPlaybackSeconds(seconds) } }} />
           {inference && runtime.error && <div className="error-note" role="alert">{runtime.error}<button className="connection-retry" onClick={runtime.retry}>Reconnect</button></div>}
           {inference ? <>
             <ModelDiagnostics diagnostics={runtime.diagnostics} metadata={runtime.metadata} playing={playing && modelReady} />

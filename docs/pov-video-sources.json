@@ -1,0 +1,73 @@
+[
+  {
+    "id": "hong_kong_parkour_pov",
+    "title": "Hong Kong Parkour POV 🇭🇰",
+    "creator": "AMPISOUND",
+    "url": "https://www.youtube.com/watch?v=cQlgVqTkTTQ",
+    "viewpoint": "first_person",
+    "verified_playback_option": "2160p60 4K",
+    "verification_method": "YouTube player quality menu and visual inspection",
+    "verified_on": "2026-10-09",
+    "visually_inspected_seconds": [
+      20,
+      35
+    ],
+    "priority": 1,
+    "status": "not_selected",
+    "model_analysis_status": "not_run",
+    "notes": "First-person close-range hands and arms; 60 fps option verified. No model performance claim."
+  },
+  {
+    "id": "prague_parkour_pov",
+    "title": "Prague Parkour POV 🇨🇿",
+    "creator": "AMPISOUND",
+    "url": "https://www.youtube.com/watch?v=U5yHk3hY2MU",
+    "viewpoint": "first_person",
+    "verified_playback_option": "2160p 4K",
+    "verification_method": "YouTube player quality menu and visual inspection",
+    "verified_on": "2026-10-09",
+    "visually_inspected_seconds": [
+      0,
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131
+    ],
+    "priority": 2,
+    "status": "local_demo",
+    "model_analysis_status": "experimental_egocentric_inference",
+    "notes": "4K 29.97 fps. Opening title omitted. Sponsor presentation begins around 127s; demo ends at original 120s. Camera wearer locomotion and inferred support, not measured force.",
+    "local_original": "data/raw/pov/prague_4k.webm",
+    "local_demo": "data/raw/pov/prague_demo_4k.mp4",
+    "source_trim_s": [
+      2,
+      120
+    ],
+    "demo_duration_s": 118
+  }
+]

@@ -1,0 +1,34 @@
+model: gemma4:12b
+endpoint: http://127.0.0.1:11435
+task: visible_contact
+window_s: 2.0
+step_s: 0.5
+sample_fps: 4
+max_image_edge: 512
+jpeg_quality: 75
+request_timeout_s: 180
+transition_actions: [foot_push_off, foot_landing, hand_impact, arm_impact, leg_impact, torso_impact, head_impact]
+actions:
+  foot_support: "The primary person's foot or feet visibly contact a surface while supporting their body or taking a step."
+  foot_push_off: "The primary person visibly pushes off a surface through a foot: a planted foot, leg extension and separation from the surface."
+  foot_landing: "Landing from a jump or drop onto the feet: an airborne body followed by visible foot-to-surface contact and settling. Ordinary alternating footfalls while walking or running are NOT jump landings. Landing on the back or trunk is NOT a foot landing."
+  hand_load: "The primary person's hands visibly press against a surface, grip or pull an external object, or carry an external load."
+  hand_impact: "The primary person's hand visibly strikes or is struck by an object or surface."
+  arm_impact: "The primary person's arm visibly collides with an object, surface or another body."
+  leg_impact: "The primary person's leg, excluding the foot, visibly collides with an object, surface or another body."
+  torso_impact: "The primary person's trunk or back visibly collides with or lands against a surface, object or another body."
+  head_impact: "The primary person's head visibly collides with an object, surface or another body."
+  hip_support: "The primary person's buttocks or hips visibly bear weight against a seat or surface."
+  torso_support: "The primary person's trunk or back visibly bears weight against a supporting surface."
+contact_regions:
+  foot_support: feet
+  foot_push_off: feet
+  foot_landing: feet
+  hand_load: hands_and_arms
+  hand_impact: hands
+  arm_impact: arms
+  leg_impact: legs
+  torso_impact: torso
+  head_impact: head
+  hip_support: hips
+  torso_support: torso

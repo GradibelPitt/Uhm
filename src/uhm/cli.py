@@ -3,6 +3,7 @@
 import json
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import typer
 
@@ -164,6 +165,44 @@ def infer_command(
     typer.echo(json.dumps(report, indent=2))
 
 
+@app.command("infer-actions")
+def infer_actions_command(
+    video: Path = ROOT / "data/raw/demo.mp4",
+    output: Path = ROOT / "runs/actions.json",
+    config: Path = ROOT / "configs/decisions_actions.yaml",
+    max_seconds: float | None = None,
+    dry_run: bool = False,
+):
+    """Label visible actions on an offline video using OpenAI Decisions."""
+    from .inference.decisions_actions import infer_actions
+
+    report = infer_actions(video, output, config, max_seconds, dry_run=dry_run)
+    typer.echo(json.dumps({"output": str(output), "segments": len(report["segments"]),
+                           "windows": len(report["windows"]), "statuses": {
+                               status: sum(window["status"] == status for window in report["windows"])
+                               for status in sorted({window["status"] for window in report["windows"]})
+                           }}, indent=2))
+
+@app.command("infer-local-actions")
+@app.command("infer-local-contacts")
+def infer_local_actions_command(
+    video: Annotated[Path, typer.Option()],
+    output: Path = ROOT / "runs/local_actions.json",
+    config: Path = ROOT / "configs/local_contacts.yaml",
+    max_seconds: float | None = None,
+    start_seconds: float = 0,
+):
+    """Classify video actions using a local vision model, without an API key."""
+    from .inference.local_actions import infer_local_actions
+
+    report = infer_local_actions(video, output, config, max_seconds, start_seconds=start_seconds)
+    typer.echo(json.dumps({"output": str(output), "model": report["model"],
+                           "segments": len(report["segments"]), "windows": len(report["windows"]),
+                           "statuses": {status: sum(window["status"] == status for window in report["windows"])
+                                        for status in sorted({window["status"] for window in report["windows"]})}},
+                          indent=2))
+
+
 @app.command("evaluate-stream")
 def evaluate_stream(
     video: Path = ROOT / "data/raw/demo.mp4",
@@ -193,6 +232,55 @@ def evaluate_stream(
     typer.echo(json.dumps(metrics, indent=2))
 
 
+@app.command("serve-actions")
+def serve_actions(
+    video: Path,
+    timeline: Path,
+    port: int = 8001,
+):
+    """View an action timeline without loading the haptic model or PyTorch."""
+    import uvicorn
+
+    from .runtime.actions_server import create_actions_app
+
+    application = create_actions_app(video, timeline)
+    typer.echo(f"Open http://127.0.0.1:{port} — standalone action timeline.")
+    uvicorn.run(application, host="127.0.0.1", port=port)
+
+@app.command("preview-haptics")
+def preview_haptics(
+    source: Path,
+    output: Path = ROOT / "runs/haptic_preview.json",
+    source_kind: str = "contacts",
+    duration_ms: float | None = None,
+    include_inferred: bool = False,
+):
+    """Export authored unit envelopes from contacts or BodyForceEvent JSONL."""
+    from .runtime.haptic_preview import preview_contacts, preview_events
+    from .schemas import BodyForceEvent
+
+    if source.resolve() == output.resolve():
+        raise typer.BadParameter("Preview output must not overwrite its source")
+    try:
+        content = source.read_text(encoding="utf-8")
+        if source_kind == "contacts":
+            result = preview_contacts(json.loads(content), include_inferred=include_inferred)
+        elif source_kind == "events":
+            if duration_ms is None:
+                raise ValueError("--duration-ms is required for event JSONL")
+            events = [BodyForceEvent.model_validate_json(line)
+                      for line in content.splitlines() if line.strip()]
+            result = preview_events(events, duration_ms)
+        else:
+            raise ValueError("--source-kind must be contacts or events")
+    except (TypeError, ValueError, OSError) as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(result.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    typer.echo(json.dumps({"output": str(output), "cues": len(result.cues),
+                           "mode": result.mode, "omitted": result.omitted}, indent=2))
+
+
 @app.command("serve")
 def serve(
     video: Path = ROOT / "data/raw/demo.mp4",
@@ -200,13 +288,14 @@ def serve(
     device: str = "cpu",
     port: int = 8000,
     runtime_config: Path | None = None,
+    actions: Path | None = None,
 ):
     """Serve the built frontend and playback-synchronized inference on localhost."""
     import uvicorn
 
     from .runtime.server import create_app
 
-    application = create_app(video, checkpoint, device, runtime_config)
+    application = create_app(video, checkpoint, device, runtime_config, actions_path=actions)
     typer.echo(f"Open http://127.0.0.1:{port} — video pixels feed the loaded checkpoint.")
     uvicorn.run(application, host="127.0.0.1", port=port)
 

@@ -1,0 +1,19 @@
+model: gpt-6-luna
+window_s: 2.0
+step_s: 0.5
+sample_fps: 4
+max_image_edge: 512
+jpeg_quality: 70
+threshold: 0.6
+negative_threshold: 0.2
+visibility_threshold: 0.6
+request_timeout_s: 45
+# Initial review thresholds only; calibrate on labeled videos before relying on results.
+actions:
+  walking: "The primary visible person takes repeated walking steps."
+  running: "The primary visible person takes repeated running steps."
+  jumping: "The primary visible person visibly leaves the ground in a jump."
+  sitting: "The primary visible person is lowering into or holding a seated posture."
+  pointing: "The primary visible person extends a hand or arm in a pointing pose."
+  waving: "The primary visible person moves a raised hand or arm back and forth."
+

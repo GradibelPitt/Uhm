@@ -1,0 +1,40 @@
+[
+  {
+    "id": "high_jump",
+    "filename": "v_HighJump_g15_c01.avi",
+    "url": "https://huggingface.co/datasets/bitmind/UCF101-Videos/resolve/main/train%5CHighJump%5Cv_HighJump_g15_c01.avi",
+    "sha256": "20c47477771b4e93523e8ee2f8c056281a0dcd851c05cffdd3009118df996d61",
+    "source": "https://huggingface.co/datasets/bitmind/UCF101-Videos",
+    "original_dataset": "https://www.crcv.ucf.edu/data/UCF101/UCF101.htm",
+    "attribution": "UCF101; mirrored by bitmind. Check original dataset terms before redistribution.",
+    "visual_context": "Third-person high jump; approach run and takeoff."
+  },
+  {
+    "id": "hand_wave",
+    "filename": "HandWaveExample.webm",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/5/58/HandWaveExample.webm?utm_campaign=index&utm_content=original&utm_source=commons.wikimedia.org",
+    "sha256": "4be68b156d3281f5c4c2a777c75060479635eb75486b704f183a70c5db08972e",
+    "source": "https://commons.wikimedia.org/wiki/File:HandWaveExample.webm",
+    "attribution": "NMu11er, CC BY-SA 4.0. Converted MP4 is a local derivative of the credited original.",
+    "visual_context": "Third-person frontal view of three people waving. Primary-person ambiguity expected."
+  },
+  {
+    "id": "basketball_dunk",
+    "filename": "v_BasketballDunk_g14_c06.avi",
+    "url": "https://huggingface.co/datasets/sayakpaul/ucf101-subset/resolve/main/v_BasketballDunk_g14_c06.avi",
+    "sha256": "bb4c12622eea7f0ca2aa3a9037dcecec828f7c7c96bf90961d1c477742fe14eb",
+    "source": "https://huggingface.co/datasets/sayakpaul/ucf101-subset",
+    "original_dataset": "https://www.crcv.ucf.edu/data/UCF101/UCF101.htm",
+    "attribution": "UCF101; mirrored by sayakpaul. Check original dataset terms before redistribution.",
+    "visual_context": "Third-person distant basketball scene; multiple people and fast motion."
+  },
+  {
+    "id": "pedestrians",
+    "filename": "vtest.avi",
+    "url": "https://raw.githubusercontent.com/opencv/opencv/4.x/samples/data/vtest.avi",
+    "sha256": "45cddc9490be69345cbdab64ca583be65987e864ca408038e648db99e10516cf",
+    "source": "https://github.com/opencv/opencv/blob/4.x/samples/data/vtest.avi",
+    "attribution": "OpenCV sample video; separate author/license for this video unconfirmed. Use locally for testing only.",
+    "visual_context": "Third-person elevated fixed camera; small pedestrians and occlusion."
+  }
+]
